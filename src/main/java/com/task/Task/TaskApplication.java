@@ -16,7 +16,6 @@ public class TaskApplication {
 
 	@Bean
 	PasswordEncoder passwordEncoder() {
-		//
 		return new BCryptPasswordEncoder();
 	}
 }

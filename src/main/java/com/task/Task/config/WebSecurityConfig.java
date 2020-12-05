@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.AuthenticationException;
@@ -41,6 +42,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 	}
+	
+	
+	@Override
+    public void configure(WebSecurity web) throws Exception {
+      web
+        .ignoring()
+           .antMatchers("/resources/**","/static/**");
+    }
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -48,8 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and().cors()
 		.and()
 		.authorizeRequests()
-		.antMatchers("/", "/api/v1/user/**", "/h2-console/**")
-		.permitAll().antMatchers("/api/v1/admin/**").hasRole("ADMIN").anyRequest().authenticated()
+		.antMatchers("/**", "/api/v1/user/**", "/h2-console/**").permitAll()
+		.antMatchers("/api/v1/admin/**").hasRole("ADMIN").anyRequest().authenticated()
 		.and()
 		.formLogin().loginPage("/api/v1/user/login")
 		.and().logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/api/v1/logout", "GET"))
